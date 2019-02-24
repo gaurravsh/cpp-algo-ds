@@ -19,12 +19,13 @@ typedef struct node{
 	int lowerIndex;
 	int upperIndex;
 }node;
-node *root;
+
 
 node *buildTree(int ,int);
 int sumAt(node *);
 void traverse(node *);
 void update(node *,int , int );
+int query(node*,int, int);
 
 int main(){
 	cout<<"Enter size of array and then numbers :"<<endl;
@@ -33,21 +34,28 @@ int main(){
 	a=new int[sizeOfArr];
 	for(int i=0;i<sizeOfArr;i++)
 		cin>>a[i];
-    root=buildTree(0, sizeOfArr-1);
+	node *root=buildTree(0, sizeOfArr-1);
 
     int index,value;
-
+    int index1, index2;
     while(1){
-    	cout <<"Enter Choice (u:update,e:exit) : ";
+    	cout <<"Enter Choice (u:update,e:exit,q:query) : ";
     	cin >>flag;
     	if(flag=='e' || flag=='E')
     		break;
-    	if(flag=='u' || flag=='U'){
+    	else if(flag=='u' || flag=='U'){
     		cout<<endl<<"Enter index and value : ";
     		cin>>index>>value;
     		update(root, index, value);
     		traverse(root);
     	}
+    	else if(flag=='q'||flag=='Q'){
+    		cout<<endl<<"Enter lower and upper index : ";
+    		cin>>index1>>index2;
+    		cout<<endl<<"query result : "
+    				<<query(root,index1,index2)<<endl;
+    	}
+    	else cout<<"bad input"<<endl;
     }
     return 0;
 }
@@ -91,9 +99,20 @@ void update(node *p,int index, int value){
 	if(index<p->lowerIndex || index>p->upperIndex)	return;
 	p->sum=p->sum+value;
 	if(p->lowerIndex==index && p->upperIndex==index)	return;
-	//if(index>p->lowerIndex)
-		update(p->left, index, value);
-	//if (index<p->upperIndex)
-		update(p->right, index, value);
+	update(p->left, index, value);
+	update(p->right, index, value);
+}
 
+int query(node* p,int i, int j){
+	if(i<p->lowerIndex && j>p->upperIndex)	return 0;
+	if(i==p->lowerIndex && j==p->upperIndex) return p->sum;
+	if(p->left->lowerIndex<=i && j<=p->left->upperIndex)
+		return query(p->left,i,j);
+	else if(p->right->lowerIndex<=i && j<=p->right->upperIndex)
+		return query(p->right,i,j);
+	else if(p->left->lowerIndex<=i && i<=p->left->upperIndex
+			&& p->right->lowerIndex<=j && j<=p->right->upperIndex)
+		return query(p->left,i,p->left->upperIndex)
+				+ query(p->right,p->right->lowerIndex,j);
+	else return 0;
 }
