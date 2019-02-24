@@ -21,18 +21,34 @@ typedef struct node{
 }node;
 node *root;
 
-node *buildTree(int i,int j);
-int sumAt(node *p);
-void traverse(node *p);
+node *buildTree(int ,int);
+int sumAt(node *);
+void traverse(node *);
+void update(node *,int , int );
 
 int main(){
 	cout<<"Enter size of array and then numbers :"<<endl;
 	cin >> sizeOfArr;
+	char flag;
 	a=new int[sizeOfArr];
 	for(int i=0;i<sizeOfArr;i++)
 		cin>>a[i];
     root=buildTree(0, sizeOfArr-1);
-    traverse(root);
+
+    int index,value;
+
+    while(1){
+    	cout <<"Enter Choice (u:update,e:exit) : ";
+    	cin >>flag;
+    	if(flag=='e' || flag=='E')
+    		break;
+    	if(flag=='u' || flag=='U'){
+    		cout<<endl<<"Enter index and value : ";
+    		cin>>index>>value;
+    		update(root, index, value);
+    		traverse(root);
+    	}
+    }
     return 0;
 }
 
